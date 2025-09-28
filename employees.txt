@@ -1,0 +1,10 @@
+employeeId,employeeName,position
+NV001,Nguyễn Thị Mai,Quản lý kho
+NV002,Trần Văn Nam,Nhân viên kho
+NV003,Lê Thị Hồng,Nhân viên bán hàng
+NV004,Phạm Văn Minh,Nhân viên kho
+NV005,Hoàng Thị Lan,Kế toán kho
+NV006,Vũ Đức Anh,Nhân viên bán hàng
+NV007,Đặng Minh Tuấn,Quản lý bán hàng
+
+

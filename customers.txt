@@ -1,0 +1,13 @@
+customerId,customerName,phone
+KH001,Công ty ABC,02838123456
+KH002,Quán cà phê Sài Gòn,0905555555
+KH003,Trường Tiểu học XYZ,02838234567
+KH004,Nhà hàng Hương Việt,0906666666
+KH005,Cá nhân Anh Tú,0907777777
+KH006,Quán nước vỉa hè Hạnh,0908888888
+KH007,Công ty Thực phẩm DELI,02838345678
+KH008,Quán sinh tố Fresh,0909999999
+KH009,Trường Mầm non Hoa Mai,02838456789
+KH010,Cá nhân Chị Hương,0911111111
+KH011,Quán cà phê Góc Nhỏ,0912222222
+KH012,Công ty Văn phòng phẩm,02838567890

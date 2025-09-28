@@ -1,0 +1,16 @@
+productId,productName,type,price,stock
+SP001,Trà sữa trân châu,Trà sữa,35000,100
+SP002,Cà phê sữa đá,Cà phê,25000,80
+SP003,Trà đào cam sả,Trà trái cây,30000,60
+SP004,Sinh tố xoài,Sinh tố,40000,50
+SP005,Nước cam ép,Nước ép,30000,70
+SP006,Cà phê đen đá,Cà phê,20000,90
+SP007,Trà sữa matcha,Trà sữa,40000,40
+SP008,Sinh tố bơ,Sinh tố,45000,30
+SP009,Nước dừa tươi,Nước ép,25000,100
+SP010,Trà vải,Trà trái cây,28000,55
+SP011,Chanh leo muối,Nước ép,22000,75
+SP012,Sinh tố dâu,Sinh tố,42000,45
+SP013,Trà sữa khoai môn,Trà sữa,38000,65
+SP014,Cà phê bạc xỉu,Cà phê,28000,85
+SP015,Nước ép táo,Nước ép,32000,60
