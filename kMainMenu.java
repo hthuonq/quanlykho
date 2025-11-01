@@ -161,13 +161,20 @@ public class kMainMenu {
     
     private static void deleteProduct() {
         String id = getStringInput("Nhap ma san pham can xoa: ");
-        cProduct product = warehouseSystem.getProductManager().findProductById(id);
         
-        if (product != null) {
-            // Ở đây cần thêm logic xóa từ productList
-            System.out.println("Xoa san pham thanh cong!");
+        // XÁC NHẬN TRƯỚC KHI XOÁ
+        System.out.print("Ban co chac chan muon xoa san pham nay? (y/n): ");
+        String confirm = scanner.nextLine().trim().toLowerCase();
+        
+        if (confirm.equals("y") || confirm.equals("yes")) {
+            boolean success = warehouseSystem.getProductManager().deleteProduct(id);
+            if (success) {
+                System.out.println("Xoa san pham thanh cong!");
+            } else {
+                System.out.println("Xoa san pham that bai! Kiem tra lai ma san pham.");
+            }
         } else {
-            System.out.println("Khong tim thay san pham!");
+            System.out.println("Da huy thao tac xoa san pham.");
         }
     }
     
