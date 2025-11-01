@@ -1,10 +1,7 @@
-employeeId,employeeName,position
-NV001,Nguyễn Thị Mai,Quản lý kho
-NV002,Trần Văn Nam,Nhân viên kho
-NV003,Lê Thị Hồng,Nhân viên bán hàng
-NV004,Phạm Văn Minh,Nhân viên kho
-NV005,Hoàng Thị Lan,Kế toán kho
-NV006,Vũ Đức Anh,Nhân viên bán hàng
-NV007,Đặng Minh Tuấn,Quản lý bán hàng
-
-
+id,name,phone,position
+NV001,Nguyen Van A,0901111111,Quan ly
+NV002,Tran Thi B,0902222222,Nhan vien
+NV003,Le Van C,0903333333,Nhan vien
+NV004,Pham Thi D,0904444444,Thu kho
+NV005,Hoang Van E,0905555555,Nhan vien
+NV006,Vu Thi F,0906666666,Ke toan
