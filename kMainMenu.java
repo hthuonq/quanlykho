@@ -181,11 +181,13 @@ public class kMainMenu {
     private static void manageCustomers() {
         boolean back = false;
         while (!back) {
-            System.out.println("\n=== QUAN LY KHACH HANG ===");
-            System.out.println("1. Hien thi tat ca khach hang");
-            System.out.println("2. Them khach hang moi");
-            System.out.println("3. Tim kiem khach hang");
-            System.out.println("0. Quay lai");
+        System.out.println("\n=== QUAN LY KHACH HANG ===");
+        System.out.println("1. Hien thi tat ca khach hang");
+        System.out.println("2. Them khach hang moi");
+        System.out.println("3. Tim kiem khach hang");
+        System.out.println("4. Cap nhat thong tin khach hang");
+        System.out.println("5. Xoa khach hang");
+        System.out.println("0. Quay lai");
             
             int choice = getIntInput("Lua chon: ");
             switch (choice) {
@@ -198,6 +200,12 @@ public class kMainMenu {
                 case 3:
                     String keyword = getStringInput("Nhap tu khoa tim kiem: ");
                     warehouseSystem.getCustomerManager().search(keyword);
+                    break;
+                case 4:
+                    updateCustomer();
+                    break;
+                case 5:
+                    deleteCustomer();
                     break;
                 case 0:
                     back = true;
@@ -218,24 +226,71 @@ public class kMainMenu {
         warehouseSystem.getCustomerManager().addCustomer(customer);
         System.out.println("Them khach hang thanh cong!");
     }
+    private static void updateCustomer() {
+        String id = getStringInput("Nhap ma khach hang can cap nhat: ");
+        eCustomer customer = warehouseSystem.getCustomerManager().findCustomerById(id);
+        
+        if (customer != null) {
+            String newName = getStringInput("Nhap ten moi: ");
+            String newPhone = getStringInput("Nhap so dien thoai moi: ");
+            
+            customer.setName(newName);
+            customer.setPhone(newPhone);
+            System.out.println("Cap nhat khach hang thanh cong!");
+        } else {
+            System.out.println("Khong tim thay khach hang!");
+        }
+    }
+
+    private static void deleteCustomer() {
+    String id = getStringInput("Nhap ma khach hang can xoa: ");
+    
+    // XÁC NHẬN TRƯỚC KHI XOÁ
+    System.out.print("Ban co chac chan muon xoa khach hang nay? (y/n): ");
+    String confirm = scanner.nextLine().trim().toLowerCase();
+    
+    if (confirm.equals("y") || confirm.equals("yes")) {
+        boolean success = warehouseSystem.getCustomerManager().deleteCustomer(id);
+        if (success) {
+            System.out.println("Xoa khach hang thanh cong!");
+        } else {
+            System.out.println("Xoa khach hang that bai! Kiem tra lai ma khach hang.");
+        }
+    } else {
+        System.out.println("Da huy thao tac xoa khach hang.");
+    }
+}
+
     
     private static void manageEmployees() {
         boolean back = false;
         while (!back) {
-            System.out.println("\n=== QUAN LY NHAN VIEN ===");
-            System.out.println("1. Hien thi tat ca nhan vien");
-            System.out.println("2. Tim kiem nhan vien");
-            System.out.println("0. Quay lai");
+        System.out.println("\n=== QUAN LY NHAN VIEN ===");
+        System.out.println("1. Hien thi tat ca nhan vien");
+        System.out.println("2. Them nhan vien moi");
+        System.out.println("3. Tim kiem nhan vien");
+        System.out.println("4. Cap nhat thong tin nhan vien");
+        System.out.println("5. Xoa nhan vien");
+        System.out.println("0. Quay lai");
             
             int choice = getIntInput("Lua chon: ");
             switch (choice) {
                 case 1:
-                    warehouseSystem.getEmployeeManager().displayAll();
-                    break;
-                case 2:
-                    String keyword = getStringInput("Nhap tu khoa tim kiem: ");
-                    warehouseSystem.getEmployeeManager().search(keyword);
-                    break;
+                warehouseSystem.getEmployeeManager().displayAll();
+                break;
+            case 2:
+                addNewEmployee();
+                break;
+            case 3:
+                String keyword = getStringInput("Nhap tu khoa tim kiem: ");
+                warehouseSystem.getEmployeeManager().search(keyword);
+                break;
+            case 4:
+                updateEmployee();
+                break;
+            case 5:
+                deleteEmployee();
+                break;
                 case 0:
                     back = true;
                     break;
@@ -244,7 +299,56 @@ public class kMainMenu {
             }
         }
     }
+    private static void addNewEmployee() {
+    System.out.println("\n=== THEM NHAN VIEN MOI ===");
+    String id = getStringInput("Nhap ma nhan vien: ");
+    String name = getStringInput("Nhap ten nhan vien: ");
+    String phone = getStringInput("Nhap so dien thoai: ");
+    String position = getStringInput("Nhap chuc vu: ");
     
+    dEmployee employee = new dEmployee(id, name, phone, position);
+    warehouseSystem.getEmployeeManager().addEmployee(employee);
+    }
+
+    private static void updateEmployee() {
+        String id = getStringInput("Nhap ma nhan vien can cap nhat: ");
+        dEmployee employee = warehouseSystem.getEmployeeManager().findEmployeeById(id);
+        
+        if (employee != null) {
+            String newName = getStringInput("Nhap ten moi: ");
+            String newPhone = getStringInput("Nhap so dien thoai moi: ");
+            String newPosition = getStringInput("Nhap chuc vu moi: ");
+            
+            employee.setName(newName);
+            employee.setContactInfo(newPhone);
+            employee.setPosition(newPosition);
+            System.out.println("Cap nhat nhan vien thanh cong!");
+        } else {
+            System.out.println("Khong tim thay nhan vien!");
+        }
+    }
+
+    private static void deleteEmployee() {
+    String id = getStringInput("Nhap ma nhan vien can xoa: ");
+    
+    // XÁC NHẬN TRƯỚC KHI XOÁ
+    System.out.print("Ban co chac chan muon xoa nhan vien nay? (y/n): ");
+    String confirm = scanner.nextLine().trim().toLowerCase();
+    
+    if (confirm.equals("y") || confirm.equals("yes")) {
+        boolean success = warehouseSystem.getEmployeeManager().deleteEmployee(id);
+        if (success) {
+            System.out.println("Xoa nhan vien thanh cong!");
+        } else {
+            System.out.println("Xoa nhan vien that bai! Kiem tra lai ma nhan vien.");
+        }
+    } else {
+        System.out.println("Da huy thao tac xoa nhan vien.");
+    }
+}
+
+
+
     private static void manageOrders() {
         boolean back = false;
         while (!back) {
@@ -252,7 +356,7 @@ public class kMainMenu {
             System.out.println("1. Hien thi tat ca don hang");
             System.out.println("2. Hien thi don hang voi tong tien");
             System.out.println("3. Tim kiem don hang");
-            System.out.println("4. Xu ly don hang");
+            System.out.println("4. Thong tin don hang cu the");
             System.out.println("0. Quay lai");
             
             int choice = getIntInput("Lua chon: ");
