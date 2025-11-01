@@ -117,6 +117,13 @@ public class hWarehouseManager {
         public eCustomer findCustomerById(String id) {
             return customerList.findCustomerById(id);
         }
+        public boolean deleteCustomer(String customerId) {
+        return customerList.deleteCustomer(customerId);
+    }
+    
+    public boolean updateCustomer(String customerId, String newName, String newPhone) {
+        return customerList.updateCustomer(customerId, newName, newPhone);
+    }
     }
     
     // Wrapper class cho EmployeeList với đa hình
@@ -148,6 +155,13 @@ public class hWarehouseManager {
         public dEmployee findEmployeeById(String id) {
             return employeeList.findEmployeeById(id);
         }
+        public boolean deleteEmployee(String employeeId) {
+        return employeeList.deleteEmployee(employeeId);
+    }
+    
+    public boolean updateEmployee(String employeeId, String newName, String newPhone, String newPosition) {
+        return employeeList.updateEmployee(employeeId, newName, newPhone, newPosition);
+    }
     }
     
     // Wrapper class cho OrderList với đa hình
