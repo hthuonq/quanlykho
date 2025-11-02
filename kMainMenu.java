@@ -34,16 +34,10 @@ public class kMainMenu {
                     manageOrders();
                     break;
                 case 5:
-                    warehouseSystem.demonstratePolymorphism();
-                    break;
-                case 6:
                     warehouseSystem.exportAllData();
                     break;
-                case 7:
+                case 6:
                     searchData();
-                    break;
-                case 8:
-                    showStatistics();
                     break;
                 case 0:
                     running = false;
@@ -68,10 +62,8 @@ public class kMainMenu {
         System.out.println("2. Quan ly Khach hang");
         System.out.println("3. Quan ly Nhan vien");
         System.out.println("4. Quan ly Don hang");
-        System.out.println("5. Demo Tinh da hinh");
-        System.out.println("6. Xuat du lieu ra file");
-        System.out.println("7. Tim kiem du lieu");
-        System.out.println("8. Thong ke");
+        System.out.println("5. Xuat du lieu ra file");
+        System.out.println("6. Tim kiem du lieu");
         System.out.println("0. Thoat");
         System.out.println("==================");
     }
@@ -355,8 +347,14 @@ public class kMainMenu {
             System.out.println("\n=== QUAN LY DON HANG ===");
             System.out.println("1. Hien thi tat ca don hang");
             System.out.println("2. Hien thi don hang voi tong tien");
-            System.out.println("3. Tim kiem don hang");
-            System.out.println("4. Thong tin don hang cu the");
+            System.out.println("3. Them don hang moi");
+            System.out.println("4. Them san pham vao don hang");
+            System.out.println("5. Xoa san pham khoi don hang");
+            System.out.println("6. Cap nhat so luong san pham");
+            System.out.println("7. Xoa don hang");
+            System.out.println("8. Xu ly don hang (Nhap/Xuat kho)");
+            System.out.println("9. Hien thi chi tiet don hang");
+            System.out.println("10. Tim kiem don hang");
             System.out.println("0. Quay lai");
             
             int choice = getIntInput("Lua chon: ");
@@ -368,12 +366,29 @@ public class kMainMenu {
                     warehouseSystem.getOrderManager().displayOrdersWithTotal();
                     break;
                 case 3:
-                    String keyword = getStringInput("Nhap tu khoa tim kiem: ");
-                    warehouseSystem.getOrderManager().search(keyword);
+                    addNewOrder();
                     break;
                 case 4:
-                    String orderId = getStringInput("Nhap ma don hang can xu ly: ");
-                    warehouseSystem.getOrderManager().processOrder(orderId);
+                    addProductToOrder();
+                    break;
+                case 5:
+                    removeProductFromOrder();
+                    break;
+                case 6:
+                    updateProductQuantityInOrder();
+                    break;
+                case 7:
+                    deleteOrder();
+                    break;
+                case 8:
+                    processOrder();
+                    break;
+                case 9:
+                    displayOrderDetails();
+                    break;
+                case 10:
+                    String keyword = getStringInput("Nhap tu khoa tim kiem: ");
+                    warehouseSystem.getOrderManager().search(keyword);
                     break;
                 case 0:
                     back = true;
@@ -382,6 +397,132 @@ public class kMainMenu {
                     System.out.println("Lua chon khong hop le!");
             }
         }
+    }
+
+    private static void addNewOrder() {
+        System.out.println("\n=== THEM DON HANG MOI ===");
+        String orderId = getStringInput("Nhap ma don hang: ");
+        String type = getStringInput("Nhap loai don hang (NHAP/XUAT): ");
+        
+        // Hiển thị danh sách nhân viên
+        warehouseSystem.getEmployeeManager().displayAll();
+        String employeeId = getStringInput("Nhap ma nhan vien: ");
+        dEmployee employee = warehouseSystem.getEmployeeManager().findEmployeeById(employeeId);
+        
+        // Hiển thị danh sách khách hàng
+        warehouseSystem.getCustomerManager().displayAll();
+        String customerId = getStringInput("Nhap ma khach hang: ");
+        eCustomer customer = warehouseSystem.getCustomerManager().findCustomerById(customerId);
+        
+        if (employee != null) {
+            gOrder order = warehouseSystem.getOrderManager().createOrder(orderId, type, employee, customer);
+            System.out.println("Tao don hang thanh cong!");
+            
+            // Hỏi người dùng có muốn thêm sản phẩm ngay không
+            System.out.print("Ban co muon them san pham vao don hang ngay bay gio? (y/n): ");
+            String addProducts = scanner.nextLine().trim().toLowerCase();
+            if (addProducts.equals("y") || addProducts.equals("yes")) {
+                addProductToOrder(orderId);
+            }
+        } else {
+            System.out.println("Khong tim thay nhan vien!");
+        }
+    }
+
+     private static void addProductToOrder() {
+        String orderId = getStringInput("Nhap ma don hang: ");
+        addProductToOrder(orderId);
+    }
+
+    private static void addProductToOrder(String orderId) {
+        // Hiển thị danh sách sản phẩm
+        warehouseSystem.getProductManager().displayAll();
+        String productId = getStringInput("Nhap ma san pham: ");
+        cProduct product = warehouseSystem.getProductManager().findProductById(productId);
+        
+        if (product != null) {
+            int quantity = getIntInput("Nhap so luong: ");
+            double unitPrice = getDoubleInput("Nhap don gia: ");
+            
+            boolean success = warehouseSystem.getOrderManager().addProductToOrder(orderId, product, quantity, unitPrice);
+            if (success) {
+                System.out.println("Them san pham vao don hang thanh cong!");
+            } else {
+                System.out.println("Them san pham that bai! Kiem tra lai ma don hang.");
+            }
+        } else {
+            System.out.println("Khong tim thay san pham!");
+        }
+    }
+
+    private static void removeProductFromOrder() {
+        String orderId = getStringInput("Nhap ma don hang: ");
+        gOrder order = warehouseSystem.getOrderManager().findOrderById(orderId);
+        
+        if (order != null) {
+            // Hiển thị chi tiết đơn hàng
+            order.displayOrderWithTotal();
+            int detailIndex = getIntInput("Nhap so thu tu san pham can xoa: ") - 1;
+            
+            boolean success = warehouseSystem.getOrderManager().removeProductFromOrder(orderId, detailIndex);
+            if (success) {
+                System.out.println("Xoa san pham khoi don hang thanh cong!");
+            } else {
+                System.out.println("Xoa san pham that bai! Kiem tra lai so thu tu.");
+            }
+        } else {
+            System.out.println("Khong tim thay don hang!");
+        }
+    }
+
+    private static void updateProductQuantityInOrder() {
+        String orderId = getStringInput("Nhap ma don hang: ");
+        gOrder order = warehouseSystem.getOrderManager().findOrderById(orderId);
+        
+        if (order != null) {
+            // Hiển thị chi tiết đơn hàng
+            order.displayOrderWithTotal();
+            int detailIndex = getIntInput("Nhap so thu tu san pham can cap nhat: ") - 1;
+            int newQuantity = getIntInput("Nhap so luong moi: ");
+            
+            boolean success = warehouseSystem.getOrderManager().updateProductQuantity(orderId, detailIndex, newQuantity);
+            if (success) {
+                System.out.println("Cap nhat so luong thanh cong!");
+            } else {
+                System.out.println("Cap nhat that bai! Kiem tra lai so thu tu.");
+            }
+        } else {
+            System.out.println("Khong tim thay don hang!");
+        }
+    }
+
+     private static void deleteOrder() {
+        String orderId = getStringInput("Nhap ma don hang can xoa: ");
+        
+        // XÁC NHẬN TRƯỚC KHI XOÁ
+        System.out.print("Ban co chac chan muon xoa don hang nay? (y/n): ");
+        String confirm = scanner.nextLine().trim().toLowerCase();
+        
+        if (confirm.equals("y") || confirm.equals("yes")) {
+            boolean success = warehouseSystem.getOrderManager().deleteOrder(orderId);
+            if (success) {
+                System.out.println("Xoa don hang thanh cong!");
+            } else {
+                System.out.println("Xoa don hang that bai! Kiem tra lai ma don hang.");
+            }
+        } else {
+            System.out.println("Da huy thao tac xoa don hang.");
+        }
+    }
+
+    private static void processOrder() {
+        String orderId = getStringInput("Nhap ma don hang can xu ly: ");
+        warehouseSystem.getOrderManager().processOrder(orderId);
+    }
+    
+    private static void displayOrderDetails() {
+        String orderId = getStringInput("Nhap ma don hang can xem: ");
+        warehouseSystem.getOrderManager().displayOrderDetails(orderId);
     }
     
     private static void searchData() {
@@ -395,11 +536,9 @@ public class kMainMenu {
         warehouseSystem.getOrderManager().search(keyword);
     }
     
-    private static void showStatistics() {
-        System.out.println("\n=== THONG KE HE THONG ===");
-        warehouseSystem.getProductManager().showStatistics();
-        warehouseSystem.getOrderManager().showStatistics();
-    }
+    
+    
+    
     
     // Utility methods
     private static int getIntInput(String prompt) {
