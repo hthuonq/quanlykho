@@ -165,63 +165,36 @@ public class hWarehouseManager {
     }
     
     // Wrapper class cho OrderList với đa hình
-    public class OrderManager implements IManageable, IStatistic {
-        @Override
-        public void displayAll() {
-            orderList.displayAllOrders();
+    public class OrderManager implements IManageable {
+    @Override
+    public void displayAll() {
+        orderList.displayAllOrders();
+    }
+    
+    @Override
+    public void search(String keyword) {
+        List<gOrder> results = orderList.searchOrders(keyword);
+        System.out.println("\n=== KET QUA TIM KIEM DON HANG: '" + keyword + "' (" + results.size() + " ket qua) ===");
+        for (gOrder order : results) {
+            order.displayInfo();
         }
-        
-        @Override
-        public void search(String keyword) {
-            List<gOrder> results = orderList.searchOrders(keyword);
-            System.out.println("\n=== KET QUA TIM KIEM DON HANG: '" + keyword + "' (" + results.size() + " ket qua) ===");
-            for (gOrder order : results) {
-                order.displayInfo();
-            }
-        }
-        
-        @Override
-        public void exportToFile(String filename) {
-            orderList.exportDataToFile(filename, orderList.getOrders(), "id,date,customerId,employeeId,type");
-        }
-        
-        @Override
-        public void showStatistics() {
-            orderList.displayRevenueStatistics();
-        }
-        
-        @Override
-        public double calculateTotalValue() {
-            double total = 0;
-            for (gOrder order : orderList.getOrders()) {
-                total += order.calculateTotal();
-            }
-            return total;
-        }
-        
-        // Phương thức riêng của OrderManager
-        public void addOrder(gOrder order) {
-            orderList.getOrders().add(order);
-        }
-        
-        public gOrder findOrderById(String id) {
-            return orderList.findOrderById(id);
-        }
-        
-        public void displayOrdersWithTotal() {
-            orderList.displayAllOrdersWithTotal();
-        }
-        
-        public void processOrder(String orderId) {
-            gOrder order = findOrderById(orderId);
-            if (order != null) {
-                order.processOrder();
-            } else {
-                System.out.println("Khong tim thay don hang: " + orderId);
-            }
-        }
-
-        // THÊM ĐƠN HÀNG MỚI
+    }
+    
+    @Override
+    public void exportToFile(String filename) {
+        orderList.exportDataToFile(filename, orderList.getOrders(), "id,date,customerId,employeeId,type");
+    }
+    
+    // Phương thức riêng của OrderManager
+    public void addOrder(gOrder order) {
+        orderList.getOrders().add(order);
+    }
+    
+    public gOrder findOrderById(String id) {
+        return orderList.findOrderById(id);
+    }
+    
+    // THÊM ĐƠN HÀNG MỚI
     public gOrder createOrder(String orderId, String type, dEmployee employee, eCustomer customer) {
         return orderList.createOrder(orderId, type, employee, customer);
     }
@@ -248,9 +221,9 @@ public class hWarehouseManager {
     
     // HIỂN THỊ CHI TIẾT ĐƠN HÀNG
     public void displayOrderDetails(String orderId) {
-        orderList.displayOrderDetailsWithTotal(orderId);
+        orderList.displayOrderDetails(orderId);
     }
-    }
+}
     
     // Getter methods
     public ProductManager getProductManager() {
@@ -287,10 +260,7 @@ public class hWarehouseManager {
         }
         
         // Sử dụng interface IStatistic
-        List<IStatistic> statistics = Arrays.asList(
-            getProductManager(),
-            getOrderManager()
-        );
+        List<IStatistic> statistics = Arrays.asList( getProductManager() );
         
         for (IStatistic statistic : statistics) {
             statistic.showStatistics();
