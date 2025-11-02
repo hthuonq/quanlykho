@@ -220,6 +220,36 @@ public class hWarehouseManager {
                 System.out.println("Khong tim thay don hang: " + orderId);
             }
         }
+
+        // THÊM ĐƠN HÀNG MỚI
+    public gOrder createOrder(String orderId, String type, dEmployee employee, eCustomer customer) {
+        return orderList.createOrder(orderId, type, employee, customer);
+    }
+    
+    // THÊM SẢN PHẨM VÀO ĐƠN HÀNG
+    public boolean addProductToOrder(String orderId, cProduct product, int quantity, double unitPrice) {
+        return orderList.addProductToOrder(orderId, product, quantity, unitPrice);
+    }
+    
+    // XÓA SẢN PHẨM KHỎI ĐƠN HÀNG
+    public boolean removeProductFromOrder(String orderId, int detailIndex) {
+        return orderList.removeProductFromOrder(orderId, detailIndex);
+    }
+    
+    // CẬP NHẬT SỐ LƯỢNG SẢN PHẨM
+    public boolean updateProductQuantity(String orderId, int detailIndex, int newQuantity) {
+        return orderList.updateProductQuantity(orderId, detailIndex, newQuantity);
+    }
+    
+    // XÓA ĐƠN HÀNG
+    public boolean deleteOrder(String orderId) {
+        return orderList.deleteOrder(orderId);
+    }
+    
+    // HIỂN THỊ CHI TIẾT ĐƠN HÀNG
+    public void displayOrderDetails(String orderId) {
+        orderList.displayOrderDetailsWithTotal(orderId);
+    }
     }
     
     // Getter methods
