@@ -5,24 +5,58 @@ import java.util.*;
 
 public class hOrderlist {
     private List<gOrder> orders;
+    private List<fOrderDetail> allOrderDetails;
     
     public hOrderlist() {
         this.orders = new ArrayList<>();
+        this.allOrderDetails = new ArrayList<>();
     }
     
-    public hOrderlist(List<gOrder> orders) {
+    public hOrderlist(List<gOrder> orders, List<fOrderDetail> allOrderDetails) {
         this.orders = orders;
+        this.allOrderDetails = allOrderDetails;
     }
     
     // === QUẢN LÝ ĐƠN HÀNG ===
+    public gOrder createOrder(String orderId, String type, dEmployee employee, eCustomer customer) {
+        gOrder order = new gOrder(orderId, type, employee, customer);
+        orders.add(order);
+        return order;
+    }
+    
     public void displayAllOrders() {
         System.out.println("\n=== DANH SACH DON HANG (" + orders.size() + ") ===");
+        for (gOrder o : orders) {
+            o.displayInfo();
+        }
+    }
+    
+    // Hiển thị tất cả đơn hàng với tổng tiền
+    public void displayAllOrdersWithTotal() {
+        System.out.println("\n=== DANH SACH DON HANG VA TONG TIEN ===");
         if (orders.isEmpty()) {
             System.out.println("Chua co don hang nao!");
             return;
         }
-        for (gOrder o : orders) {
-            o.displayInfo();
+        
+        double grandTotal = 0;
+        for (gOrder order : orders) {
+            order.displayInfo();
+            grandTotal += order.calculateTotal();
+        }
+        
+        System.out.println("-----------------------------------------------------------");
+        System.out.printf(" TONG DOANH THU TAT CA DON HANG: %,-25.0f \n", grandTotal);
+        System.out.println("-----------------------------------------------------------");
+    }
+    
+    // Hiển thị chi tiết 1 đơn hàng cụ thể
+    public void displayOrderDetailsWithTotal(String orderId) {
+        gOrder order = findOrderById(orderId);
+        if (order != null) {
+            order.displayOrderWithTotal();
+        } else {
+            System.out.println("Khong tim thay don hang: " + orderId);
         }
     }
     
@@ -34,65 +68,6 @@ public class hOrderlist {
             }
         }
         return null;
-    }
-    
-    // THÊM ĐƠN HÀNG MỚI
-    public boolean addOrder(gOrder order) {
-        if (findOrderById(order.getOrderId()) != null) {
-            System.out.println("Ma don hang da ton tai: " + order.getOrderId());
-            return false;
-        }
-        orders.add(order);
-        System.out.println("Them don hang thanh cong: " + order.getOrderId());
-        return true;
-    }
-    
-    // CẬP NHẬT ĐƠN HÀNG
-    public boolean updateOrder(String orderId, String newType, dEmployee newEmployee, eCustomer newCustomer) {
-        gOrder order = findOrderById(orderId);
-        if (order != null) {
-            // Tạo đơn hàng mới với thông tin cập nhật
-            gOrder updatedOrder = new gOrder(orderId, newType, newEmployee, newCustomer);
-            
-            // Giữ lại các chi tiết đơn hàng cũ
-            List<fOrderDetail> oldDetails = order.getOrderDetails();
-            for (fOrderDetail detail : oldDetails) {
-                updatedOrder.addProduct(detail.getProduct(), detail.getQuantity(), detail.getUnitPrice());
-            }
-            
-            // Thay thế đơn hàng cũ bằng đơn hàng mới
-            orders.remove(order);
-            orders.add(updatedOrder);
-            
-            System.out.println("Cap nhat don hang thanh cong: " + orderId);
-            return true;
-        }
-        System.out.println("Khong tim thay don hang: " + orderId);
-        return false;
-    }
-    
-    // XÓA ĐƠN HÀNG
-    public boolean deleteOrder(String orderId) {
-        gOrder order = findOrderById(orderId);
-        if (order != null) {
-            orders.remove(order);
-            System.out.println("Da xoa don hang: " + orderId);
-            return true;
-        }
-        System.out.println("Khong tim thay don hang: " + orderId);
-        return false;
-    }
-    
-    // THÊM SẢN PHẨM VÀO ĐƠN HÀNG
-    public boolean addProductToOrder(String orderId, cProduct product, int quantity, double unitPrice) {
-        gOrder order = findOrderById(orderId);
-        if (order != null) {
-            order.addProduct(product, quantity, unitPrice);
-            System.out.println("Da them san pham " + product.getName() + " vao don hang " + orderId);
-            return true;
-        }
-        System.out.println("Khong tim thay don hang: " + orderId);
-        return false;
     }
     
     // TÌM KIẾM ĐƠN HÀNG
@@ -108,8 +83,136 @@ public class hOrderlist {
         }
         return result;
     }
+
+    // THÊM SẢN PHẨM VÀO ĐƠN HÀNG
+    public boolean addProductToOrder(String orderId, cProduct product, int quantity, double unitPrice) {
+        gOrder order = findOrderById(orderId);
+        if (order != null) {
+            order.addProduct(product, quantity, unitPrice);
+            return true;
+        }
+        return false;
+    }
+
+    // XÓA SẢN PHẨM KHỎI ĐƠN HÀNG
+    public boolean removeProductFromOrder(String orderId, int detailIndex) {
+        gOrder order = findOrderById(orderId);
+        if (order != null && detailIndex >= 0 && detailIndex < order.getOrderDetails().size()) {
+            order.getOrderDetails().remove(detailIndex);
+            return true;
+        }
+        return false;
+    }
+
+    // CẬP NHẬT SỐ LƯỢNG SẢN PHẨM TRONG ĐƠN HÀNG
+    public boolean updateProductQuantity(String orderId, int detailIndex, int newQuantity) {
+        gOrder order = findOrderById(orderId);
+        if (order != null && detailIndex >= 0 && detailIndex < order.getOrderDetails().size()) {
+            fOrderDetail detail = order.getOrderDetails().get(detailIndex);
+            detail = new fOrderDetail(detail.getDetailId(), orderId, detail.getProduct(), newQuantity, detail.getUnitPrice());
+            order.getOrderDetails().set(detailIndex, detail);
+            return true;
+        }
+        return false;
+    }
+    
+    // XÓA ĐƠN HÀNG
+    public boolean deleteOrder(String orderId) {
+        gOrder order = findOrderById(orderId);
+        if (order != null) {
+            // Hoàn trả số lượng sản phẩm nếu là đơn xuất
+            if (order.getType().equals("XUAT")) {
+                for (fOrderDetail detail : order.getOrderDetails()) {
+                    cProduct product = detail.getProduct();
+                    product.updateQuantity(detail.getQuantity()); // Trả lại số lượng
+                }
+            } else if (order.getType().equals("NHAP")) {
+                // Trừ đi số lượng nếu là đơn nhập
+                for (fOrderDetail detail : order.getOrderDetails()) {
+                    cProduct product = detail.getProduct();
+                    product.updateQuantity(-detail.getQuantity());
+                }
+            }
+            orders.remove(order);
+            return true;
+        }
+        return false;
+    }
+
+    // XỬ LÝ ĐƠN HÀNG (NHẬP/XUẤT KHO)
+    public boolean processOrder(String orderId) {
+        gOrder order = findOrderById(orderId);
+        if (order != null) {
+            return order.processOrder();
+        }
+        return false;
+    }
+    
+    // Thống kê doanh thu theo loại đơn hàng
+    public void displayRevenueStatistics() {
+        double importTotal = 0;
+        double exportTotal = 0;
+        
+        for (gOrder order : orders) {
+            double orderTotal = order.calculateTotal();
+            if (order.getType().equals("NHAP")) {
+                importTotal += orderTotal;
+            } else if (order.getType().equals("XUAT")) {
+                exportTotal += orderTotal;
+            }
+        }
+        
+        double profit = exportTotal - importTotal;
+        
+        System.out.println("\n=== THONG KE DOANH THU ===");
+        System.out.printf("Tong gia tri nhap kho: %,-15.0f VND\n", importTotal);
+        System.out.printf("Tong gia tri xuat kho: %,-15.0f VND\n", exportTotal);
+        System.out.println("-----------------------------------------------------------");
+        
+        if (profit > 0) {
+            System.out.printf("LOI NHUAN: %,-15.0f VND\n", profit);
+        } else if (profit < 0) {
+            System.out.printf("LO: %,-15.0f VND\n", Math.abs(profit));
+        } else {
+            System.out.printf("HOA VON: %,-15.0f VND\n", profit);
+        }
+    }
+    
+    // Xuất dữ liệu ra file
+    public void exportDataToFile(String filename, List<?> dataList, String header) {
+        try (PrintWriter pw = new PrintWriter(new FileWriter(filename))) {
+            // Ghi header nếu có
+            if (header != null && !header.isEmpty()) {
+                pw.println(header);
+            }
+            // Ghi dữ liệu
+            for (Object obj : dataList) {
+                pw.println(obj.toString());
+            }
+            System.out.println("Da xuat du lieu ra file: " + filename);
+        } catch (IOException e) {
+            System.out.println("Loi ghi file: " + e.getMessage());
+        }
+    }
+    
+    // Xuất tất cả order details
+    public void exportAllOrderDetails(String filename) {
+        List<fOrderDetail> allOrderDetails = new ArrayList<>();
+        
+        // Thu thập tất cả order details từ các đơn hàng
+        for (gOrder order : orders) {
+            List<fOrderDetail> details = order.getOrderDetails();
+            allOrderDetails.addAll(details);
+        }
+        
+        exportDataToFile(filename, allOrderDetails, "detailId,orderId,productId,numproduct,unitPrice");
+    }
     
     public List<gOrder> getOrders() {
         return orders;
+    }
+    
+    public List<fOrderDetail> getAllOrderDetails() {
+        return allOrderDetails;
     }
 }
