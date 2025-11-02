@@ -9,7 +9,7 @@ public class kMainMenu {
         scanner = new Scanner(System.in);
         
         System.out.println("=========================================");
-        System.out.println("    HE THONG QUAN LY KHO BEVERAGE");
+        System.out.println("    HE THONG QUAN LY KHO");
         System.out.println("=========================================");
         
         // Load dữ liệu từ file
@@ -346,15 +346,13 @@ public class kMainMenu {
         while (!back) {
             System.out.println("\n=== QUAN LY DON HANG ===");
             System.out.println("1. Hien thi tat ca don hang");
-            System.out.println("2. Hien thi don hang voi tong tien");
-            System.out.println("3. Them don hang moi");
-            System.out.println("4. Them san pham vao don hang");
-            System.out.println("5. Xoa san pham khoi don hang");
-            System.out.println("6. Cap nhat so luong san pham");
-            System.out.println("7. Xoa don hang");
-            System.out.println("8. Xu ly don hang (Nhap/Xuat kho)");
-            System.out.println("9. Hien thi chi tiet don hang");
-            System.out.println("10. Tim kiem don hang");
+            System.out.println("2. Them don hang moi");
+            System.out.println("3. Them san pham vao don hang");
+            System.out.println("4. Xoa san pham khoi don hang");
+            System.out.println("5. Cap nhat so luong san pham");
+            System.out.println("6. Xoa don hang");
+            System.out.println("7. Hien thi chi tiet don hang");
+            System.out.println("8. Tim kiem don hang");
             System.out.println("0. Quay lai");
             
             int choice = getIntInput("Lua chon: ");
@@ -363,30 +361,24 @@ public class kMainMenu {
                     warehouseSystem.getOrderManager().displayAll();
                     break;
                 case 2:
-                    warehouseSystem.getOrderManager().displayOrdersWithTotal();
-                    break;
-                case 3:
                     addNewOrder();
                     break;
-                case 4:
+                case 3:
                     addProductToOrder();
                     break;
-                case 5:
+                case 4:
                     removeProductFromOrder();
                     break;
-                case 6:
+                case 5:
                     updateProductQuantityInOrder();
                     break;
-                case 7:
+                case 6:
                     deleteOrder();
                     break;
-                case 8:
-                    processOrder();
-                    break;
-                case 9:
+                case 7:
                     displayOrderDetails();
                     break;
-                case 10:
+                case 8:
                     String keyword = getStringInput("Nhap tu khoa tim kiem: ");
                     warehouseSystem.getOrderManager().search(keyword);
                     break;
@@ -429,7 +421,7 @@ public class kMainMenu {
         }
     }
 
-     private static void addProductToOrder() {
+    private static void addProductToOrder() {
         String orderId = getStringInput("Nhap ma don hang: ");
         addProductToOrder(orderId);
     }
@@ -514,11 +506,6 @@ public class kMainMenu {
             System.out.println("Da huy thao tac xoa don hang.");
         }
     }
-
-    private static void processOrder() {
-        String orderId = getStringInput("Nhap ma don hang can xu ly: ");
-        warehouseSystem.getOrderManager().processOrder(orderId);
-    }
     
     private static void displayOrderDetails() {
         String orderId = getStringInput("Nhap ma don hang can xem: ");
@@ -535,10 +522,6 @@ public class kMainMenu {
         warehouseSystem.getEmployeeManager().search(keyword);
         warehouseSystem.getOrderManager().search(keyword);
     }
-    
-    
-    
-    
     
     // Utility methods
     private static int getIntInput(String prompt) {
